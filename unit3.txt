@@ -1,0 +1,194 @@
+{
+    val r1 = spark.sparkContext.parallelize(Seq(("A",1),("B",2),("C",3)))
+    r1.foreach(println)
+}
+
+{
+    val data = Array(1,2,3,4,5)
+    val rdd = sc.parallelize(data)
+    rdd.foreach(println)
+}
+
+
+{
+    val data = Array(1,2,3,4,5)
+    val rdd = sc.parallelize(data)
+    rdd.collect()
+}
+
+{
+    val rdd2 = spark.sparkContext.textFile("C:/Users/Navneet singh/Desktop/Dummy/scala.txt/sample.txt")
+}
+
+{
+    val rdd2 = spark.sparkContext.textFile("C:/Users/Navneet singh/Desktop/Dummy/scala-programs/sample.txt")
+    val rdd3 = rdd2.flatMap(_.split(" "))
+    rdd3.collect()
+}
+@REM  Create a RDD from existing data frame
+{
+    val rdd = spark.range(40).toDF().rdd
+    rdd.collect()
+}
+
+write Scala code to parallelize a simple collection (e.g an array or list) into an RDD in spark
+
+{
+    val rdd2 = spark.sparkContext.textFile("C:/Users/Navneet singh/Desktop/Dummy/scala-programs/data.txt")
+    rdd2.collect()
+}
+
+{
+    val x = sc.parallelize(1 to 10)
+    x.collect()
+    val y = x.filter(z => z%2 == 0)
+    y.collect()
+}
+
+{
+    val x = sc.parallelize(1 to 10)
+    x.collect()
+    val y = x.filter(z => z%2 == 0)
+    y.collect()
+}
+
+
+{
+    val rdd1 = sc.parallelize(Array(1,2,3,4))
+    val rdd2 = sc.parallelize(Array(4,6,7,8))
+    val u = rdd1.union(rdd2)
+    u.foreach(println)
+}
+{
+    val dup = sc.parallelize(Array(1,2,2,2,2,3))
+    val dis = dup.distinct()
+    dis.foreach(println)
+}
+@REM Create an RDD of numbers 1 to 20, with 4 partitions
+{
+    val rdd = sc.parallelize(1 to 20, 4)
+    println("Number of partitions: " + rdd.getNumPartitions)
+
+    println("Elements in each partition:")
+    rdd.glom().collect().zipWithIndex.foreach {
+    case (partitionData, partitionIndex) =>
+        println(s"Partition $partitionIndex: " + partitionData.mkString(", "))
+    }
+}
+
+@REM Write Scala code to parallelize a simple collection (e.g., an array or list) into an RDD in Spark. 
+
+{
+    val data = Array(1, 2, 3, 4, 5)
+    val rdd = sc.parallelize(data)
+    rdd.foreach(println)
+
+}
+
+{
+    val dataList = List("apple", "banana", "orange", "grape", "pineapple")
+    val rdd = sc.parallelize(dataList)
+    rdd.foreach(println)
+}
+
+@REM groupByKey()
+
+{
+    val data=sc.parallelize(Array(('a',1),('b',2),('c',3), ('a',5),('b',2)),3)
+    val group=data.groupByKey()
+    group.foreach(println)
+
+}
+
+@REM reduceByKey(): give us that how many times an element is repeating etc.
+
+{
+    val words=Array("one","two","two","three")
+	val red=sc.parallelize(words).map(w=>(w,1)).reduceByKey(_+_)
+	red.foreach(println)
+}
+
+@REM Joins
+
+{
+    val q = sc.parallelize(Array(('a',1),('b',2),('c',3)))
+	val p = sc.parallelize(Array(('a',4),('b',3),('c',3)))
+    val v = q.join(p)
+	v.foreach(println)
+}
+
+@REM Coalesce() is used to reduce number of partitions, it avoid full shuffling of data. So it will reduce the number of partitions.
+
+{
+    val rdd = sc.parallelize(1 to 100, 6) 
+    println("Partitions before: " + rdd.getNumPartitions) 
+    val coalescedRdd = rdd.coalesce(3) 
+    println("Partitions after: " + coalescedRdd.getNumPartitions) 
+
+}
+
+@REM Actions
+
+{
+    val rdd = sc.textFile("C:/Users/Navneet singh/Desktop/Dummy/scala-programs/data.txt")
+    val totalCount = rdd.count()
+    println(s"Total Count: $totalCount")
+    val collectedData = rdd.collect()
+    collectedData.foreach(println)
+    val firstFour = rdd.take(4)
+    firstFour.foreach(println)
+    val topThree = rdd.top(3) 
+    topThree.foreach(println)
+    val counts = rdd.countByValue()
+    counts.foreach{ case (word, count) => println(s"$word -> $count") }
+    val concatenated = rdd.reduce((a, b) => a + " " + b)
+    println(concatenated)
+
+}
+
+@REM A retail company stores daily sales transactions in an RDD where each record is (StoreID, ItemID, Quantity, Price). Retrieve all transactions from the RDD to inspect them locally.
+
+{
+    val store = sc.parallelize(Seq(
+        (1, 101, 2, 50.0),
+      (1, 102, 1, 30.0),
+      (2, 101, 5, 50.0),
+      (2, 103, 3, 70.0)
+    ))
+
+    val transactions = store.collect()
+    transactions.foreach(println)
+
+}
+
+@REM You are analyzing customer feedback stored in an RDD, where each record is a comment. Retrieve the first comment for a quick preview.
+
+{
+    val customer = sc.parallelize(Seq("Great product!", "Could be better", "Fast delivery"))
+    customer.first()
+}
+
+@REM An e-commerce store has an RDD of purchased product IDs ( e.g. A,B,A,C,A,D etc.) . Find how many times each product was purchased
+
+{
+    val purchasesRDD = sc.parallelize(Seq("A", "B", "A", "C", "A", "B", "D", "C", "B", "B")) 
+    purchasesRDD.countByValue()
+}
+
+
+@REM A student dataset contains exam scores in an RDD. Retrieve the top 3 scores.
+
+{
+    val student = sc.parallelize(Seq(89,45,56,78,48,59,68,98))
+    student.top(3)
+}
+
+@REM A news agency processes article text stored in an RDD, where each record is a sentence. Compute the word frequency across all sentences.
+
+
+{
+    val textRDD = sc.parallelize(Seq("Big data is powerful", "Spark is great for big data", "Machine learning with Spark")) 
+    val wordCounts = textRDD.flatMap(_.split(" ")).countByValue() 
+    wordCounts
+
+}

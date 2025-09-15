@@ -1,0 +1,59 @@
+{
+    val data = Array(1,2,3,4,5)
+    val rdd = sc.parallelize(data)
+    rdd.foreach(println)
+}
+
+
+{
+    val data = Array(1,2,3,4,5)
+    val rdd = sc.parallelize(data)
+    rdd.collect()
+}
+
+{
+    val rdd2 = spark.sparkContext.textFile("C:/Users/Navneet singh/Desktop/Dummy/scala.txt/sample.txt")
+}
+{
+    val rdd2 = spark.sparkContext.textFile("C:/Users/Navneet singh/Desktop/Dummy/scala.txt/sample.txt")
+    val rdd3 = rdd2.flatMap(_.split(" "))
+    rdd3.collect()
+}
+
+{
+    val rdd = spark.range(40).toDF().rdd
+    rdd.collect()
+}
+
+write Scala code to parallelize a simple collection (e.g an array or list) into an RDD in spark
+
+{
+    val rdd2 = spark.sparkContext.textFile("C:/Users/Navneet singh/Desktop/Dummy/scala.txt/data.txt")
+    rdd2.collect()
+}
+
+{
+    val x = sc.parallelize(1 to 10)
+    x.collect()
+    val y = x.filter(z => z%2 == 0)
+    y.collect()
+}
+{
+    val x = sc.parallelize(1 to 10)
+    x.collect()
+    val y = x.filter(z => z%2 == 0)
+    y.collect()
+}
+
+
+{
+    val rdd1 = sc.parallelize(Array(1,2,3,4))
+    val rdd2 = sc.parallelize(Array(4,6,7,8))
+    val u = rdd1.union(rdd2)
+    u.foreach(println)
+}
+{
+    val dup = sc.parallelize(Array(1,2,2,2,2,3))
+    val dis = dup.distinct()
+    dis.foreach(println)
+}

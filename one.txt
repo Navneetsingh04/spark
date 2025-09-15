@@ -1,0 +1,120 @@
+{
+      import scala.io.StdIn.readInt
+      def checkNum(year : Int){
+      if((year%4 == 0 && year%100 != 0) || (year %400 == 0)){
+      println("Leap Year")
+      }
+      else{
+      println("Not a Leap Yaer")
+      }
+      }
+	println("Enter Year: ")
+      val year = readInt()
+	println(year)
+      checkNum(year)
+ }
+
+
+object PalindromeNumber {
+  def isPalindrome(num: Int): Boolean = {
+    val str = num.toString
+    str == str.reverse
+  }
+
+  def main(args: Array[String]): Unit = {
+    println("Enter a number: ")
+    val input = scala.io.StdIn.readInt()
+    if (isPalindrome(input)) {
+      println(s"$input is a Palindrome Number")
+    } else {
+      println(s"$input is Not a Palindrome Number")
+    }
+  }
+}
+
+{
+  def isPalindrome(num: Int): Boolean = {
+    var n = num
+    var rev = 0
+    var temp = n
+
+    while (temp > 0) {
+      val digit = temp % 10
+      rev = rev * 10 + digit
+      temp = temp / 10
+    }
+
+    n == rev
+  }
+
+  def main(args: Array[String]): Unit = {
+    println("Enter a number: ")
+    val input = scala.io.StdIn.readInt()
+    if (isPalindrome(input)) {
+      println(s"$input is a Palindrome Number")
+    } else {
+      println(s"$input is Not a Palindrome Number")
+    }
+  }
+}
+
+
+
+
+{
+    var var1 = "the".r	
+    var var2 = "the big data course"	
+    var var3 = var1.findFirstIn(var2)		
+    var3.foreach(println)
+}
+
+{
+    var var1 = "[1-5]+".r
+    var var2 = "12 67 93 48 51"
+    var var3 = var1.findAllIn(var2)
+    var3.foreach(println)
+
+}
+
+{
+    var var1 = "8201530"
+    var var2 = var1.replaceFirst("[01]","x")
+    println(var2)
+}
+
+{
+    import scala.io.StdIn.readInt
+  
+    def solve(a:Int) = {
+        if(a > 0){
+            println("Postive number");
+        }
+        else if(a < 0){
+            println("Negative number");
+        }
+        else{
+            println("Zero")
+        }
+    }
+    println("Eneter the value of a: ")
+    val a = readInt()
+    println(s"Eneterd value of a is $a")
+    solve(a)
+}
+
+{
+    val seqCollection = Seq(2,4,6,8,10);
+	val result = seqCollection.apply(1);
+	println(result)
+
+}
+
+{
+    var arr1 = new Array[String](3)
+
+arr1(0) = "red"
+arr1(1) = "blue"
+arr1(2) = "Yellow"
+arr1.foreach(println)
+
+}

@@ -1,0 +1,375 @@
+C:\spark\spark-3.5.6-bin-hadoop3\bin
+spark-shell
+
+spark
+
+----------------------------------------------------------
+
+{
+import scala.io.StdIn.readLine
+import scala.io.StdIn.readInt
+
+val a = readInt()
+println("a is",a)
+val b = readLine()
+println("b is ",b)
+
+println(a)
+println(b)
+
+}
+
+----------------------------------------------------------
+
+{
+import scala.io.StdIn.readLine
+import scala.io.StdIn.readInt
+
+val a = readInt()
+println("input a is",a)
+val b = readInt()
+println("input b is",b)
+if(a > b){
+println(" a is greater")}
+else
+println("b is greater")
+}
+
+
+----------------------------------------------------------
+
+
+{
+  var a : String = "Govind";
+  println(a)
+}
+
+----------------------------------------------------------
+
+
+
+{
+  val first = "lpu"
+  var second = "university"
+  println(first+" "+second)
+  println(first concat " " concat second)
+}
+
+
+----------------------------------------------------------
+{
+  val a = "Hi"
+  val b = "hi"
+
+  println(a == b)
+  println(a equals b)
+  println(a equalsIgnoreCase b)
+  println(a compareTo b)
+ 
+}
+----------------------------------------------------------
+
+{
+  val multi = """ This is a multi lined
+  string which have 2 lines """
+  println(multi)
+}
+
+----------------------------------------------------------
+
+{
+  val split = "a, b, c, d, e"
+  val res = split.split(",")
+  res.foreach(println())
+}
+----------------------------------------------------------
+{
+  import scala.io.StdIn.readInt
+  def fun(a : Int){
+    if(a > 0)
+    println("Positive Number")
+    else if(a < 0)
+     println("Negative number")
+     else 
+       println("zero")
+
+  }
+  var input = readInt()
+  println(s"Entered value : ${input}" )
+  fun(input)
+}
+----------------------------------------------------------
+
+{
+  def fun(a : Int){
+    if(a%4 == 0 && a%100 != 0 || a % 400 == 0)
+    println("Leap year")
+    else 
+    println("Not leap year") 
+  }
+  import scala.io.StdIn.readInt
+  val input = readInt()
+  println(s"Entered year is ${input}")
+  fun(input)
+}
+
+----------------------------------------------------------
+
+{
+  def len(n : Int) : Int = {
+    var num = n
+    var count =0
+    while(num != 0){
+      count = count + 1
+      num /= 10;
+    }
+  return count
+  }
+  import scala.math.pow
+  def fun(num : Int){
+    var length = len(num)
+    var temp = num
+    var result = 0
+    while(temp != 0){
+      var rem = temp % 10
+      result = result * 10 + math.pow(rem, length)
+      temp = temp / 10
+    }
+    if(result == num)
+    println("ArmStrong number")
+    else 
+     println("Not armStrong number")
+  }
+  import scala.io.StdIn.readInt
+  var input = readInt()
+  println("Entered number is : ")
+  fun(input)
+}
+
+----------------------------------------------------------
+
+{
+   val se = Seq(2,4,6,8,10,12)
+   val res = se.applay(1)
+   println(res)
+}
+
+{
+  val arr1 = new Array[String(3)]
+  arr1(0) = "red"
+  arr2(1) = "blue"
+  arr1.foreach(println)
+}
+  
+ ----------------------------------------------------------
+
+{
+val arr1 = Array.fill(2)('Hi')
+arr1.foreach(println)
+}
+ ----------------------------------------------------------
+
+{
+  import scala.io.StdIn.readLine
+  println("Enter a string : ")
+  val input = readLine()
+  // val str = input.replace("\\s, "").toLowerCase()
+  if(str == str.reverse)
+  println("palindrome")
+  else 
+   println("not a palindrome")
+}
+
+ ----------------------------------------------------------
+
+
+{
+  val list = 1 :: 2 :: 3 :: 4 :: Nil
+  list.foreach(println)
+  println("list2")
+
+  println("appending")
+  val list2 = list :+ 5
+  list2.foreach(println)
+  println("prepending list3")
+  val list3 = 8 +: list2
+  println("prepending list6")
+  val list6 = 8 :: list2
+  list3.foreach(println)
+  println("concating two list")
+  val list4 = 5 :: 6 :: 7 :: 8 :: Nil;
+  val list5 =  list ::: list4
+  println("Concated two list")
+  println(list5)
+
+
+  println("*")
+  val h = list.head
+  val t = list.tail
+  println(h)
+  println("*")
+  println(t)
+
+}
+
+ ----------------------------------------------------------
+
+ {
+ 
+ val normallist = 1 :: 2 :: 3 
+
+ val lazylist = 1#::2#::3#::4#::LazyList.empty 
+ val st = 1#::2#::3#::4#::Stream.empty
+ 
+ }
+ ----------------------------------------------------------
+
+ {
+  
+  val v1 = Vector(1,2,3,4,5)
+  val v2 = v1 :+ 6
+  val v3 = 7 +: v1 
+  v2.foreach(println)
+  println("*")
+  v3.foreach(println)
+  val v4 = Vector.empty
+  println("*")
+  v4.foreach(println)
+  val v5 = v1 ++ v2;
+  v3.foreach(println)
+ }
+
+  ----------------------------------------------------------
+
+  {
+    import scala.io.StdIn.readInt
+    def isEven(a : Int) : Boolean{
+      if(a%2 == 0) return true
+      else return false
+    }
+
+    def printEvenStatus(a : Int){
+      if(isEven(a))
+      println("Even")
+      else 
+      println("Odd")
+    }
+
+    
+    val input = readInt()
+    println(s"Input Value : $input")
+    printEvenStatus(input)
+  }
+
+  {
+
+    def printing(n : Int) {
+      val res = fact(n)
+      println(s"The factoril of first ${n}  is ${res}")
+    }
+    def fact(n : Int) : Int ={
+      if(n == 1) return 1;
+      return n * fact(n -1);
+
+    }
+  import scala.io.StdIn.readInt
+    val input = readInt()
+    println(s"The Factorial of ${input} is")
+    println(fact(input))
+  }
+
+  // Sum of n natural numbers
+  {
+     def printing(n : Int) {
+      val res = sumN(n)
+      println(s"The Sum of first ${n} Natual Numbers is ${res}")
+    }
+     def sumN(n : Int) : Int = {
+      if(n == 0) return 0
+      return n + sumN(n-1)
+    }
+
+    import scala.io.StdIn.readInt
+    val input = readInt()
+    println(s"Your Input Number is $input")
+    printing(input)
+  }
+// power of number
+  {
+   def power(n : Int, m : Int) : Int = {
+    if(m == 0) return 1;
+    return n * power(n,m-1);
+   }
+   import scala.io.StdIn.readInt
+   println("Input n : ")
+   val base = readInt()
+    println("Input m : ")
+    val pow = readInt();
+    val res = power(base,pow)
+    println(s"${base} to the power ${pow} is ${res}")
+  }
+
+  // Sum of first N fibonacci serice 
+
+  {
+  def fibo(n: Int): Int = {
+    if (n == 1) return 0
+    if (n == 2) return 1
+    fibo(n - 1) + fibo(n - 2)
+  }
+
+  import scala.io.StdIn.readInt
+  println("Input n : ")
+  val n = readInt()
+  val sum = fibo(n + 2) - 1
+  println(s"The Sum of First $n Fibonacci numbers is $sum")
+}
+
+-----------------------------------------------------------
+
+{
+  val data = Array(1, 2, 3, 4, 5)
+
+val rdd = sc.parallelize(data)
+rdd.collect()
+}
+
+
+
+{
+  val rdd2 = spark.sparkContext.textFile("D:\sem7\Cluster Computing\data.txt")
+  val rdd3 = rdd2.flatMap(_.split())
+
+}
+
+{
+  val rdd1 = sc.parallelize(1,2,3,4)
+  val rdd2 = sc.parallelize(4,5,6,7)
+  val u = rdd1.union(rdd2)
+  u.foreach(println)
+
+}
+
+
+-----------------------------------------------------------
+
+
+val data = sc.parallelize(Array(('a',1), ('b',2),('c',3),('a',5),('b',2)), 3)
+
+
+val words = Array("one", "two", "two", "three")
+val red = sc.parallelize(words).map(w =>())
+
+
+
+val r = sc.parallelize(Seq(("A",2),("Y",4)))
+val rdd = sc.parallelize(Array(5, 6, 8,34,2,1,9))
+
+a retail  company stores daily sales transactions in an RDD where each record is (StoreID, ItemID, Quantitiy, Price). Retrieve all transactions from the RDD to inspect them locally
+
+input : / 101 , A1, 5, 200
+           105, B1, 10, 800 
+
+OP : 
+       101 A1 5 280
+        105 B1 10 80
