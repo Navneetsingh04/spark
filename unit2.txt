@@ -80,7 +80,7 @@ println("b is greater")
 {
   val split = "a, b, c, d, e"
   val res = split.split(",")
-  res.foreach(println())
+  res.foreach(println)
 }
 ----------------------------------------------------------
 {
