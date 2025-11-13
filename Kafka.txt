@@ -1,0 +1,76 @@
+Kafka
+
+Step 1: Start ZooKeeper ( 1st terminal )
+
+cd C:\kafka_2.12-3.9.1
+
+.\bin\windows\zookeeper-server-start.bat .\config\zookeeper.properties
+
+Step 2: Start a Kafka Broker ( 2nd terminal )
+
+cd C:\kafka_2.12-3.9.1
+
+.\bin\windows\kafka-server-start.bat .\config\server.properties
+
+Step 3: Checking Kafka Services - ( 3rd terminal )
+
+jps
+
+============================================================
+Creating topic
+
+ .\bin\windows\kafka-topics.bat --create --topic my-topic --bootstrap-server localhost:9092 --partitions 1 --replication-factor 1
+
+===================
+creating Producer
+
+ .\bin\windows\kafka-console-producer.bat  --bootstrap-server localhost:9092 --topic my-topic
+
+===================
+consumer
+
+
+.\bin\windows\kafka-console-consumer.bat --bootstrap-server localhost:9092 --topic my-topic --from-beginning
+
+---
+
+Create a producer with 2 partitons
+
+Creating Topics
+
+\bin\windows\kafka-topics.bat --create --topic order --bootstrap-server localhost:9092 --partitions 2 --replication-factor 1
+---
+
+producer
+
+.\bin\windows\kafka-console-producer.bat --bootstrap-server localhost:9092 --topic order --property parse.key=true --property key.separator=:
+
+consumer
+
+=> ./bin/windows/kafka-console-consumer.bat --bootstrap-server localhost:9092 --topic order --group og
+
+============================================
+
+How to check the topics
+
+=> ./bin/windows/kafka-topics.bat --bootstrap-server localhost:9092 --list
+
+
+=> ./bin/windows/kafka-topics.bat --bootstrap-server localhost:9092 --topic order --describe
+
+========================================
+
+• Info about consumer group
+kafka-consumer-groups.bat --bootstrap-server localhost:9092 --describe --group my-group
+
+• check all groups
+kafka-consumer-groups.bat --bootstrap-server localhost:9092 --list
+
+
+docker run --rm -d -p 8080:8080 -e KAFKA_CLUSTER_0_NAME=KAFKA_CLUSTER_0_BOOTSTRAPSERVERS= 192.168.253.1:9092  --name kafkaui provectuslab/kafka-ui
+
+
+docker run --rm -d -p 8080:8080 `
+  -e KAFKA_CLUSTER_0_NAME=local `
+  -e KAFKA_CLUSTER_0_BOOTSTRAPSERVERS=192.168.253.1:9092 `
+  --name kafkaui provectuslabs/kafka-ui
