@@ -1,0 +1,26 @@
+{
+    from pyspark.sql import SparkSession
+    from pyspark.ml.classification import LogisticRegression
+    from pyspark.ml.feature import VectorAssembler
+    from pyspark.ml.evaluation import BinaryClassificationEvaluator
+
+    spark = SparkSession.builder.appName("demo").getOrCreate()
+
+
+    da = spark.read.option("header", True).csv("C:/Users/Navneet singh/Desktop/Dummy/Scala-Programs/sample1.csv")
+
+    data = spark.createDataFrame(da,coloums)
+
+    
+    assembler = VectorAssembler(inputCols = ["hours"],outputCol = "features")
+
+    data_with_features = assembler.transform(data)
+    train,test = data_with_features.randomSplit([0.7,0.3], seed = 42)
+    algo = LinearRegression(featuresCol = "features", labelCol = "passed")
+    model = algo.fit(train)
+    predictions = model.transform(test)
+    predictions.select("hours","probability","prediction").show()
+    evaluator = BinaryClassificationEvaluator(labelCol = "passed")
+    accuracy = evaluator.evaluate(predictions)
+    printf(f"accuracy of the model is: {accuracy : .2f})
+}

@@ -1,0 +1,60 @@
+
+"C:/Users/Navneet singh/Desktop/Dummy/Scala-Programs/boston_housing.csv"
+
+
+from pyspark.sql import SparkSession
+spark = SparkSession.builder.appName("BostonHousing").getOrCreate()
+data = spark.read.csv("C:/Users/Navneet singh/Desktop/Dummy/Scala-Programs/boston_housing.csv",header = True,inferSchema = True)
+data.show(7)
+ data.printSchema()   // names of the column and data types
+feature_columns = data.columns[:-1]
+print(feature_columns)
+from pyspark.ml.feature import VectorAssembler
+assembler = VectorAssembler(inputCol = feature_columns,outputCol = "features")
+data2 = assembler.transform(data)
+data2.show(8)
+train, test = data2.randomSplit([0.7,0.3])
+
+from pyspark.ml.regression import LinearRegression
+algo = LinearRegression(featuresCol = "features",labelCol = "medv")
+
+
+@REM GRAPH
+
+{
+import org.apache.spark._
+import org.apache.spark.graphx._
+import org.apache.spark.rdd.RDD
+
+val vertices = Array((1L,("A")),(2L,("B")), (3L,("C")))
+val vRDD= sc.parallelize(vertices)
+vRDD.foreach(println)
+vRDD.collect().foreach(println)
+
+val edges = Array(Edge(1L,2L,1800),Edge(2L,3L,1400),Edge(3L,1L,500))
+val eRDD = sc.parallelize(edges)
+eRDD.collect().foreach(println)
+
+val graph = Graph(vRDD,eRDD)
+
+graph.vertices.collect().foreach(println)
+graph.edges.collect().foreach(println)
+val numAirports = graph.numVertices
+val numRoutes = graph.numEdges
+
+@REM find all the dist > 1000
+
+graph.edges.filter{ case Edge(src,dst,prop) => prop > 1000}.collect().foreach(println)
+
+graph.triplets.take(3).foreach(println)
+
+val indegree = graph.inDegrees
+indegree.collect()
+
+val outdegree = graph.outDegrees
+outdegree.collect()
+
+val d = graph.degrees
+d.collect()
+}
+

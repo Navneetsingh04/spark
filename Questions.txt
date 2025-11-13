@@ -1,0 +1,83 @@
+Question 1:
+
+@REM A weather monitoring station collects temperature and humidity data. Using Spark RDD functions:
+@REM a. Remove data where temperature is below -10 C.
+@REM b. Find the average humidity level.
+@REM c. Identify the highest recorded temperature.
+
+
+{
+    val data = Seq(
+    (-15, 60),
+    (5, 55),
+    (12, 65),
+    (30, 70),
+    (-5, 50))
+
+    val rdd = sc.parallelize(data, 4)
+
+    val filteredRDD = rdd.filter { case (temp, _) => temp >= -10 }
+
+    val (totalHumidity, count) = filteredRDD.map { case (_, humidity) => (humidity.toDouble, 1) }
+    .reduce { case ((sum1, cnt1), (sum2, cnt2)) => (sum1 + sum2, cnt1 + cnt2) }
+
+    val avgHumidity = totalHumidity / count
+
+    val maxTemp = filteredRDD.map { case (temp, _) => temp }.max()
+
+    println(s"Average Humidity: $avgHumidity")
+    println(s"Highest Temperature: $maxTemp")
+
+}
+
+
+Question 2
+
+@REM A You are given an RDD containing integers: [3, 6, 9, 12, 15]. Write a Spark program in Scala that:
+@REM A. Adds 5 to each number.
+@REM B. Filters out numbers greater than 15.
+
+{
+    val rdd = sc.parallelize(Seq(3, 6, 9, 12, 15), 2)
+    val addedRDD = rdd.map(_ + 5)
+    val filteredRDD = addedRDD.filter(_ <= 15)
+
+    println("After adding 5 to each number: "+ addedRDD.collect().mkString(", "))
+    println("After Filters out numbers greater than 15: "+ filteredRDD.collect().mkString(", "))
+
+}
+
+
+Question 3
+
+@REM Convert an RDD containing OrderlD, CustomerID, Product, and Amount into a DataFrame and:
+@REM a. Show the schema
+@REM b. Find orders where the amount is greater than 10,000.
+@REM e. Save the DataFrame as a JSON file.
+
+{
+    import spark.implicits._
+    val data = Seq(
+        (1,101,"Laptop",50000),
+        (2,102,"Mobile",15000),
+        (3,103,"watch", 55000),
+        (4,104,"Earbuds",2000),
+        (5,105,"Tv",45200)
+    )
+    
+    val rdd = spark.sparkContext.parallelize(data)
+
+    val df = rdd.toDF("OrderID", "CustomerID", "Product", "Amount")
+
+    df.show()
+    df.describe()
+
+    println("Orders where amount > 10,000:")
+    val highValueOrders = df.filter($"Amount" > 10000)
+    highValueOrders.show()
+
+    highValueOrders.write.mode("overwrite").json("output/high_value_orders.json")
+
+    println("DataFrame saved as JSON at: output/high_value_orders.json")
+
+}

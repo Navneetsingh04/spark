@@ -1,0 +1,81 @@
+{
+    import org.apache.spark.sql.SparkSession
+    val spark = SparkSession.builder().master("local[1]").appName("sparkExample").getOrCreate()
+    val df1 = spark.read.option("header",true).csv("C:/Users/Navneet singh/Desktop/Dummy/Scala-Programs/students.csv")
+    val df2 = spark.read.option("header",true).csv("C:/Users/Navneet singh/Desktop/Dummy/Scala-Programs/courses.csv")
+    val df3 = spark.read.option("header",true).csv("C:/Users/Navneet singh/Desktop/Dummy/Scala-Programs/departments.csv")
+    df1.createOrReplaceTempView("t1")
+    df2.createOrReplaceTempView("t2")
+    df3.createOrReplaceTempView("t3")
+    spark.sql("select * from t1").show()
+    spark.sql("select * from t2").show()
+    spark.sql("select * from t3").show()
+    spark.sql("select d.name from departments d 
+    join students s
+    ON d.department_id = s.department_id
+    where s.department_id IS NULL")
+
+}
+
+question-10:  Find departments that don’t have any students.
+
+{
+    import org.apache.spark.sql.SparkSession
+    val spark = SparkSession.builder().master("local[1]").appName("sparkExample").getOrCreate()
+    val df1 = spark.read.option("header",true).csv("C:/Users/Navneet singh/Desktop/Dummy/Scala-Programs/students.csv")
+    val df2 = spark.read.option("header",true).csv("C:/Users/Navneet singh/Desktop/Dummy/Scala-Programs/courses.csv")
+    val df3 = spark.read.option("header",true).csv("C:/Users/Navneet singh/Desktop/Dummy/Scala-Programs/departments.csv")
+    df1.createOrReplaceTempView("t1")
+    df2.createOrReplaceTempView("t2")
+    df3.createOrReplaceTempView("t3")
+    spark.sql("""
+    select d.dept_name 
+    from t3 d
+    left join t1 s
+    on d.department_id = s.department_id
+    where s.department_id is null
+""").show()
+}
+
+question - 11 : Find departments that don’t have any courses.
+
+{
+    import org.apache.spark.sql.SparkSession
+    val spark = SparkSession.builder().master("local[1]").appName("sparkExample").getOrCreate()
+    val df1 = spark.read.option("header",true).csv("C:/Users/Navneet singh/Desktop/Dummy/Scala-Programs/students.csv")
+    val df2 = spark.read.option("header",true).csv("C:/Users/Navneet singh/Desktop/Dummy/Scala-Programs/courses.csv")
+    val df3 = spark.read.option("header",true).csv("C:/Users/Navneet singh/Desktop/Dummy/Scala-Programs/departments.csv")
+    df1.createOrReplaceTempView("t1")
+    df2.createOrReplaceTempView("t2")
+    df3.createOrReplaceTempView("t3")
+    spark.sql("""
+    select d.dept_name 
+    from t3 d
+    left join t2 c
+    on d.department_id = c.department_id
+    where c.course_name is null
+""").show()
+}
+
+Question 12 : Display all possible combinations of students and courses 
+
+{
+    import org.apache.spark.sql.SparkSession
+    val spark = SparkSession.builder().master("local[1]").appName("sparkExample").getOrCreate()
+    val df1 = spark.read.option("header",true).csv("C:/Users/Navneet singh/Desktop/Dummy/Scala-Programs/students.csv")
+    val df2 = spark.read.option("header",true).csv("C:/Users/Navneet singh/Desktop/Dummy/Scala-Programs/courses.csv")
+    val df3 = spark.read.option("header",true).csv("C:/Users/Navneet singh/Desktop/Dummy/Scala-Programs/departments.csv")
+    df1.createOrReplaceTempView("t1")
+    df2.createOrReplaceTempView("t2")
+    df3.createOrReplaceTempView("t3")
+    spark.sql("""
+  SELECT 
+    s.student_id,
+    s.name AS student_name,
+    c.course_id,
+    c.course_name
+  FROM t1 s
+  CROSS JOIN t2 c
+""").show()
+
+}

@@ -1,0 +1,98 @@
+{
+    from pyspark.sql import SparkSession
+    from pyspark.sql.functions import when, col, mean
+    from pyspark.ml.feature import StringIndexer, OneHotEncoder, VectorAssembler
+    from pyspark.ml.classification import LogisticRegression
+    from pyspark.ml.evaluation import MulticlassClassificationEvaluator
+    from pyspark.ml import Pipeline
+    import matplotlib.pyplot as plt
+
+    @REM  1. Initializing Spark Session
+
+    spark = SparkSession.builder.appName("StudentResultPrediction").getOrCreate()
+
+    @REM 2. Load Dataset
+
+    df = spark.read.csv("C:/Users/Navneet singh/Downloads/StudentsPerformance.csv", header=True, inferSchema=True)
+    print("Initial Record Count:", df.count())
+    df.printSchema()
+
+    @REM 3. Fill missing numeric values with mean
+
+    numeric_cols = ["math score", "reading score", "writing score"]
+    mean_values = df.select([mean(c).alias(c) for c in numeric_cols]).collect()[0]
+    df = df.na.fill({c: mean_values[c] for c in numeric_cols})
+
+    @REM 4. Create target variable (Pass/Fail)
+
+    df = df.withColumn("average_score", (col("math score") + col("reading score") + col("writing score")) / 3)
+
+    df = df.withColumn("passed", when(col("average_score") >= 50, 1).otherwise(0))
+
+    @REM  5. Encode categorical features safely
+
+    categorical_cols = ["gender", "race/ethnicity", "parental level of education", "lunch", "test preparation course"]
+
+    indexers = [StringIndexer(inputCol=c, outputCol=c + "_indexed", handleInvalid="keep") for c in categorical_cols]
+
+    encoders = [OneHotEncoder(inputCol=c + "_indexed", outputCol=c + "_encoded", handleInvalid="keep") for c in categorical_cols]
+
+    feature_cols = [c + "_encoded" for c in categorical_cols] + ["math score", "reading score", "writing score"]
+
+    assembler = VectorAssembler(inputCols=feature_cols, outputCol="features", handleInvalid="keep")
+
+    @REM 6. Logistic Regression Pipeline
+
+    lr = LogisticRegression(featuresCol="features", labelCol="passed")
+    pipeline = Pipeline(stages=indexers + encoders + [assembler, lr])
+
+    @REM 7. Train/Test Split
+
+    train_df, test_df = df.randomSplit([0.7, 0.3])
+    print("Train:", train_df.count(), "Test:", test_df.count())
+
+    @REM 8. Train Model
+
+    model = pipeline.fit(train_df)
+
+    @REM 9. Predictions
+
+    predictions = model.transform(test_df)
+
+    print("Predictions Count:", predictions.count())
+
+    @REM 10. Evaluate Model
+
+    evaluator_acc = MulticlassClassificationEvaluator(labelCol="passed", predictionCol="prediction", metricName="accuracy")
+
+    evaluator_f1 = MulticlassClassificationEvaluator(labelCol="passed", predictionCol="prediction", metricName="f1")
+
+    accuracy = evaluator_acc.evaluate(predictions)
+
+    f1 = evaluator_f1.evaluate(predictions)
+
+    print(f"Accuracy: {accuracy:.4f}")
+    print(f"F1-Score: {f1:.4f}")
+
+    @REM 11. Visualization (Bar Chart)
+
+    pdf = predictions.select("passed", "prediction").toPandas()
+    counts = pdf.value_counts(["passed", "prediction"]).reset_index(name="count")
+
+    plt.bar(counts["passed"].astype(str) + "-" + counts["prediction"].astype(str),
+            counts["count"], color="skyblue", edgecolor="black")
+    plt.xlabel("Actual-Predicted (0=Fail, 1=Pass)")
+    plt.ylabel("Count")
+    plt.title("Actual vs Predicted Results")
+    plt.xticks(rotation=45)
+    plt.show()
+
+    @REM 12. Export CSV file
+
+    predictions.select("gender", "race/ethnicity", "parental level of education", "lunch", "test preparation course","math score", "reading score", "writing score", "average_score", "passed", "prediction").toPandas().to_csv("C:/Users/Navneet singh/Downloads/student_predictions.csv", index=False)
+
+    print("Exported predictions to: C:/Users/Navneet singh/Downloads/student_predictions.csv")
+
+    spark.stop()
+
+}

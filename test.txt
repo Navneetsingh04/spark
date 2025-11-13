@@ -1,0 +1,33 @@
+{
+    import scala.io.StdIn.readInt
+    def printNumber(n: Int) : Int = {
+        var temp = n
+	    var rev = 0
+        while(temp > 0){
+        	val digit = temp%10
+        	rev = rev * 10 + digit
+      		temp = temp / 10
+        }
+	    return rev;
+    }
+    println("Enter the value of n: ")
+    val n = readInt()
+    println(s"Entered Value is $n")
+    val ans = printNumber(n)
+    println(ans)
+}
+
+{
+    val rdd1 = sc.parallelize(Seq(101,102,103,104,105))
+    val rdd2 = sc.parallelize(Seq(104,105,106,107,108))
+
+    val union = rdd1.union(rdd2)                
+    val inter = rdd1.intersection(rdd2)          
+    val diff = rdd1.subtract(rdd2)               
+    val unique = union.distinct().count()   
+
+    println("union: " + union.collect().mkString(","))
+    println("Intersection: " + inter.collect().mkString(","))
+    println("Difference: " + diff.collect().mkString(","))
+    println("Unique Count: " + unique)
+}

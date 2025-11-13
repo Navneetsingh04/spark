@@ -1,0 +1,141 @@
+{
+    import spark.implicts._
+    val col = Seq(("A1", "XYZ"),("B1","PQR"),("C1","ABC"))
+    val rdd = spark.sparkContext.parallelize(Col)
+    val df1 = rdd.toDf("SID","SNEME")
+    df1.show()
+}
+{
+    import spark.implicits._
+    val col = Seq(("A1", "XYZ"),("B1","PQR"),("C1","ABC"))
+    val rdd = spark.sparkContext.parallelize(Col)
+    val df1 = rdd.toDf("SID","SNEME")
+    df1.show()
+}
+
+{
+    import spark.implicits._
+    val df1 = spark.read.option("header",true).csv("C:/Users/Navneet singh/Desktop/Dummy/Scala-Programs/sample.csv")
+    df1.show()
+}
+
+{
+    import spark.implicits._
+    val df1 = spark.read.option("header",true).csv("C:/Users/Navneet singh/Desktop/Dummy/Scala-Programs/employee.csv")
+    df1.show()
+    
+}
+
+@REM  Practice Question 1
+
+Consider a dataset named employee_data with the following schema:
+| Name     | Age | Department | Salary |
+|----------|-----|------------|--------|
+| John     |  30 | IT         |  50000 |
+| Alice    |  35 | HR         |  60000 |
+| Bob      |  40 | Finance    |  70000 |
+Write SparkSQL queries to perform the following tasks:
+1. Load the data into a Spark DataFrame.
+2. Find the average age of employees.
+3. Retrieve the names of employees who belong to the Sales department.
+4. Calculate the total salary budget of the company.
+
+
+{
+    import spark.implicits._
+    import org.apache.spark.sql.SparkSession
+    val spark = SparkSession.builder().master("local[1]").appName("SparkExmaple").getOrCreate()
+
+    val rdd = spark.sparkContext.parallelize(Seq(
+        ("Alice",30,"IT",50000),
+        ("Bob",24,"Sales",40000),
+        ("Joe",32,"SDE",100000)
+    ))
+    
+    val df = rdd.toDF("Name","Age","Departement","Salary")
+    df.show()
+
+    df.createOrReplaceTempView("emp")
+
+    val avgAge = spark.sql("SELECT AVG(Age) as avg_Age FROM emp")
+    avgAge.show()
+
+    val salesDep = spark.sql("SELECT Name FROM  emp WHERE Departement = 'Sales'")
+    salesDep.show()
+
+    val totalBudget = spark.sql("SELECT SUM(Salary) As Total_Salary_Budget FROM emp")
+    totalBudget.show()
+
+}
+
+
+@REM  Joins
+
+val emp1 = sc.parallelize(List((10,"Inventory","Hybd"),
+(20,"Finance","banglore"),
+(30,"HR","Mumbai"),
+(40,"Admin","Delhi"))).toDF("DeptNo.","DeptName","Location")
+
+emp1.show()
+
+
+val emp2 = sc.parallelize(List(
+    (111,"Saketh","analyst",444,10), 
+    (222,"Sudha","clerk",333,20), 
+    (333,"Jagan","Manager",111,10), 
+    (444,"madhu","engineer",222,40)
+    )).toDF("Empno","Ename","job","Mgr","DeptName")
+
+emp2.show()
+
+emp1.join(emp2,"DeptName").show()
+
+
+@REM Creating the employees table
+
+@REM Employee Table
+{
+    val employeesData = Seq(
+    (1, "Alice", 101, 60000),
+    (2, "Bob", 102, 55000),
+    (3, "Charlie", 101, 62000),
+    (4, "David", 103, 58000)
+    )
+
+    val employeesDF = spark.createDataFrame(employeesData).toDF("employee_id", "name", "department_id", "salary")
+
+    employeesDF.createOrReplaceTempView("employees")
+
+}
+
+@REM Creating the departments table
+
+{
+    val departmentsData = Seq(
+    (101, "HR"),
+    (102, "Finance"),
+    (103, "Marketing")
+    )
+    val departmentsDF = spark.createDataFrame(departmentsData).toDF("department_id", "department_name")
+
+    departmentsDF.createOrReplaceTempView("departments")
+
+}
+
+@REM Questions 1: Retrieve all the columns from the employees and departments tables where there is a matching key 'department_id' between them.
+
+{
+    val innerJoin = spark.sql(
+    """
+        SELECT e.*, d.*
+        FROM employees e
+        JOIN departments d
+        ON e.department_id = d.department_id
+    """
+    )
+
+    innerJoin.show()
+}
+
+
+
