@@ -6,7 +6,7 @@ from pyspark.sql import SparkSession
 spark = SparkSession.builder.appName("BostonHousing").getOrCreate()
 data = spark.read.csv("C:/Users/Navneet singh/Desktop/Dummy/Scala-Programs/boston_housing.csv",header = True,inferSchema = True)
 data.show(7)
- data.printSchema()   // names of the column and data types
+data.printSchema()   // names of the column and data types
 feature_columns = data.columns[:-1]
 print(feature_columns)
 from pyspark.ml.feature import VectorAssembler
@@ -58,3 +58,88 @@ val d = graph.degrees
 d.collect()
 }
 
+A company's organizational structure is modeled as a graph where nodes represent employees and edges represent reporting relationships. Using Spark GraphX:
+a. Create a graph with at least six employees (include team leads and subordinates).
+b. Identify the employee(s) with the most subordinates.
+c. Find all direct reports (first-level) of a given manager.
+d. Calculate the total number of reporting relationships in the graph.
+
+
+Answer
+
+{
+    import org.apache.spark._
+    import org.apache.spark.graphx._
+    import org.apache.spark.rdd.RDD
+
+    // vertices: (id,Name)
+    val vertices = Array(
+        (1L,"CEO"),
+        (2L,"Lead1"),
+        (3L,"Lead2"),
+        (4L,"EmpA"),
+        (5L,"EmpB"),
+        (6L,"EmpC")
+    )
+
+    val vRDD = sc.parallelize(vertices)
+    vRDD.collect().foreach(println)
+
+    // edges : Edge(managerId,employeeId,"reports")
+
+    val edges = Array(
+        Edge(1L,2L,"reports"),
+        Edge(1L,3L,"reports"),
+        Edge(2L,4L,"reports"),
+        Edge(2L,5L,"reports"),
+        Edge(3L,6L,"reports")
+    )
+
+    val eRDD = sc.parallelize(edges)
+    eRDD.collect().foreach(println)
+
+    // build graph
+    val graph = Graph(vRDD,eRDD)
+
+    graph.vertices.collect().foreach(println)
+    graph.edges.collect().foreach(println)
+
+    // a. Number of Employee and relationships
+
+    val numEmployees = graph.numVertices
+    val numRelationships = graph.numEdges
+    println("Employees: "+ numEmployees)
+    println("Reporting relationship: "+ numRelationships)
+
+    // b. Employess with most subordianates = higher outdegree
+
+    val outDeg = graph.outDegrees
+    val maxOut = outDeg.map(_._2).max()
+    val managersWithMostReports = outDeg.filter{
+        case (_,d) => d == maxOut
+    }.collect()
+
+    println("Employess with most subordinates: ")
+    managersWithMostReports.foreach(println)
+
+    // c. direct first-level reports for a given manager (ex  manager = 2L)
+    val managerId = 2L
+    val directReports = graph.edges.filter(e => e.srcId == managerId).map(e => e.dstId).collect()
+
+    println("Direct reports of manager " + managerId + ":")
+    directReports.foreach(println)
+
+    // d. total reports realtionship (same as numEdges)
+    println("Total Reporting realtionships = "+ graph.numEdges)
+
+    // view triplets
+
+    graph.triplets.take(10).foreach(println)
+
+    // degrees
+
+    val indeg = graph.inDegrees
+    indeg.collect().foreach(println)
+    val outdeg = graph.outDegrees
+    outdeg.collect().foreach(println)
+}
